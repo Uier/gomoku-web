@@ -27,6 +27,12 @@
     <div class="flex justify-end">
       <button type="button" @click="$emit('restart')">重新開始</button>
     </div>
+
+    <p class="footer">
+      作者：師大資工三年級 于子緯
+      <br />
+      <a href="https://github.com/Uier/gomoku-web">https://github.com/Uier/gomoku-web</a>
+    </p>
   </div>
 </template>
 
@@ -93,7 +99,7 @@ button {
   border-radius: 4px;
   color: white;
   padding: 15px 22px;
-  text-align: center;
+  width: 100%;
   font-size: 16px;
   cursor: pointer;
 }
