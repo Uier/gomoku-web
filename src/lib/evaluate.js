@@ -1,6 +1,7 @@
 import { CELL } from '../constants/type';
+import { SIZE, BOUND } from '../constants/board';
 
-export const weights = [
+export const WEIGHTS = [
   [],
   [10, 1],        // LIVE 1, DEAD 1
   [100, 10],      // LIVE 2, DEAD 2
@@ -16,9 +17,9 @@ export const weights = [
  * @return {number}    the score of the pattern
  */
 const scorePattern = (cnt, blocking) => {
-  if (cnt >= 5) return weights[5];
+  if (cnt >= 5) return WEIGHTS[5];
   if (blocking === 2) return 0;
-  return weights[cnt][blocking];
+  return WEIGHTS[cnt][blocking];
 }
 
 /**
@@ -29,86 +30,121 @@ const scorePattern = (cnt, blocking) => {
  */
 export const evaluate = (board, pos, type) => {
   let score = 0;
-  const col = pos % 15;
-  const cnt = {
-    VERTICAL: 1,
-    HORIZONTAL: 1,
-    POS_DIAG: 1,
-    NEG_DIAG: 1,
-  }
-  const endding = {
-    VERTICAL: 2,
-    HORIZONTAL: 2,
-    POS_DIAG: 2,
-    NEG_DIAG: 2,
-  }
+  const col = pos % SIZE;
+  score += evaluateVertical(board, pos, type);
+  score += evaluateHorizontal(board, pos, type, col);
+  score += evaluatePosDiag(board, pos, type, col);
+  score += evaluateNegDiag(board, pos, type, col);
+  return score;
+}
+
+const evaluateVertical = (board, pos, type) => {
+  let cnt = 1;
+  let blocking = 2;
   // top
-  for (let i=pos-15, j=1; i >= 0 && j <= 4; i -= 15, ++j) {
-    if (board[i].type === type)  cnt.VERTICAL++;
+  for (let i=pos-SIZE; i >= 0; i -= SIZE) {
+    if (board[i].type === type)  cnt++;
     else {
-      if (board[i].type === CELL.EMPTY)  endding.VERTICAL--;
+      if (board[i].type === CELL.EMPTY)  blocking--;
       break;
     }
   }
   // bottom
-  for (let i=pos+15, j=1; i < board.length && j <= 4; i += 15, ++j) {
-    if (board[i].type === type)  cnt.VERTICAL++;
+  for (let i=pos+SIZE; i < BOUND; i += SIZE) {
+    if (board[i].type === type)  cnt++;
     else {
-      if (board[i].type === CELL.EMPTY)  endding.VERTICAL--;
+      if (board[i].type === CELL.EMPTY)  blocking--;
       break;
     }
   }
-  score += scorePattern(cnt.VERTICAL, endding.VERTICAL);
+  return scorePattern(cnt, blocking);
+}
+
+const evaluateHorizontal = (board, pos, type, col) => {
+  let cnt = 1;
+  let blocking = 2;
   // left
-  for (let i=pos-1, j=1; i >= 0 && i%15 < col && j <= 4; i -= 1, ++j) {
-    if (board[i].type === type)  cnt.HORIZONTAL++;
+  for (let i=pos-1; i >= 0 && i%SIZE < col; i -= 1) {
+    if (board[i].type === type)  cnt++;
     else {
-      if (board[i].type === CELL.EMPTY)  endding.HORIZONTAL--;
+      if (board[i].type === CELL.EMPTY)  blocking--;
       break;
     }
   }
   // right
-  for (let i=pos+1, j=1; i%15 > col && j <= 4; i += 1, ++j) {
-    if (board[i].type === type)  cnt.HORIZONTAL++;
+  for (let i=pos+1; i%SIZE > col; i += 1) {
+    if (board[i].type === type)  cnt++;
     else {
-      if (board[i].type === CELL.EMPTY)  endding.HORIZONTAL--;
+      if (board[i].type === CELL.EMPTY)  blocking--;
       break;
     }
   }
-  score += scorePattern(cnt.HORIZONTAL, endding.HORIZONTAL);
+  return scorePattern(cnt, blocking);
+}
+
+const evaluatePosDiag = (board, pos, type, col) => {
+  let cnt = 1;
+  let blocking = 2;
   // top right
-  for (let i=pos-14, j=1; i >= 0 && i%15 > col && j <= 4; i -= 14, ++j) {
-    if (board[i].type === type)  cnt.POS_DIAG++;
+  for (let i=pos-14; i >= 0 && i%SIZE > col; i -= 14) {
+    if (board[i].type === type)  cnt++;
     else {
-      if (board[i].type === CELL.EMPTY)  endding.POS_DIAG--;
+      if (board[i].type === CELL.EMPTY)  blocking--;
       break;
     }
   }
   // bottom left
-  for (let i=pos+14, j=1; i < board.length && i%15 < col && j <= 4; i += 14, ++j) {
-    if (board[i].type === type)  cnt.POS_DIAG++;
+  for (let i=pos+14; i < BOUND && i%SIZE < col; i += 14) {
+    if (board[i].type === type)  cnt++;
     else {
-      if (board[i].type === CELL.EMPTY)  endding.POS_DIAG--;
+      if (board[i].type === CELL.EMPTY)  blocking--;
       break;
     }
   }
-  score += scorePattern(cnt.POS_DIAG, endding.POS_DIAG);
+  return scorePattern(cnt, blocking);
+}
+
+const evaluateNegDiag = (board, pos, type, col) => {
+  let cnt = 1;
+  let blocking = 2;
   // top left
-  for (let i=pos-16, j=1; i >= 0 && i%15 < col && j <= 4; i -= 16, ++j) {
-    if (board[i].type === type)  cnt.NEG_DIAG++;
+  for (let i=pos-16; i >= 0 && i%SIZE < col; i -= 16) {
+    if (board[i].type === type)  cnt++;
     else {
-      if (board[i].type === CELL.EMPTY)  endding.NEG_DIAG--;
+      if (board[i].type === CELL.EMPTY)  blocking--;
       break;
     }
   }
   // bottom right
-  for (let i=pos+16, j=1; i < board.length && i%15 > col && j <= 4; i += 16, ++j) {
-    if (board[i].type === type)  cnt.NEG_DIAG++;
+  for (let i=pos+16; i < BOUND && i%SIZE > col; i += 16) {
+    if (board[i].type === type)  cnt++;
     else {
-      if (board[i].type === CELL.EMPTY)  endding.NEG_DIAG--;
+      if (board[i].type === CELL.EMPTY)  blocking--;
       break;
     }
   }
-  score += scorePattern(cnt.NEG_DIAG, endding.NEG_DIAG);
-  return score;
+  return scorePattern(cnt, blocking);
+}
+
+export const checkWin = (board, pos, type) => {
+  const col = pos % SIZE;
+  const positions = [pos];
+  if (evaluateVertical(board, pos, type) >= WEIGHTS[5]) {
+    for (let i=pos-SIZE; i >= 0; i -= SIZE) if (board[i].type === type)  positions.push(i); else break;
+    for (let i=pos+SIZE; i < BOUND; i += SIZE) if (board[i].type === type) positions.push(i); else break;
+    return [true, positions.slice(0, 5)];
+  } else if (evaluateHorizontal(board, pos, type, col) >= WEIGHTS[5]) {
+    for (let i=pos-1; i >= 0 && i%SIZE < col; i -= 1) if (board[i].type === type)  positions.push(i); else break;
+    for (let i=pos+1; i < BOUND && i%SIZE > col; i += 1) if (board[i].type === type) positions.push(i); else break;
+    return [true, positions.slice(0, 5)];
+  } else if (evaluatePosDiag(board, pos, type, col) >= WEIGHTS[5]) {
+    for (let i=pos-14; i >= 0 && i%SIZE > col; i -= 14) if (board[i].type === type)  positions.push(i); else break;
+    for (let i=pos+14; i < BOUND && i%SIZE < col; i += 14) if (board[i].type === type) positions.push(i); else break;
+    return [true, positions.slice(0, 5)];
+  } else if (evaluateNegDiag(board, pos, type, col) >= WEIGHTS[5]) {
+    for (let i=pos-16; i >= 0 && i%SIZE < col; i -= 16) if (board[i].type === type)  positions.push(i); else break;
+    for (let i=pos+16; i < BOUND && i%SIZE > col; i += 16) if (board[i].type === type) positions.push(i); else break;
+    return [true, positions.slice(0, 5)];
+  }
+  return [false, []];
 }
