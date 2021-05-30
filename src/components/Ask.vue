@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" v-if="show">
+  <div class="modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -21,14 +21,12 @@ export default {
   name: 'Ask',
   data() {
     return {
-      show: true,
       CELL,
     }
   },
   methods: {
     answer(type) {
       this.$emit('answer', type);
-      this.show = false;
     },
   }
 }
@@ -54,12 +52,12 @@ export default {
   background-color: #fff;
 }
 button {
-  background-color: #4CAF50; /* Green */
+  background-color: #2c3e50;
   border: none;
+  border-radius: 4px;
   color: white;
-  padding: 15px 32px;
-  margin: 0px 10px;
-  text-align: center;
+  padding: 15px 22px;
+  margin: 0px 20px;
   font-size: 16px;
   cursor: pointer;
 }

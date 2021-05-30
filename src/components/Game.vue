@@ -3,7 +3,7 @@
     <div id="chessboard" ref="chessboard">
       <div
         v-for="({ type, step }, i) in board"
-        :style="{ top: 24 + 40 * ROW[i] + 'px', left: 24 + 40 * COL[i] +'px'}"
+        :style="{ top: 34 + 40 * ROW[i] + 'px', left: 34 + 40 * COL[i] +'px'}"
         :key="i"
         :class="{
           chess: true,
@@ -17,8 +17,8 @@
         <div v-else class="click-area" @click="place(i, userType)" />
       </div>
     </div>
-    <Ask @answer="start" />
-    <Display v-if="turn !== null || winner != null" :turn="turn" :winner="winner" />
+    <Ask v-if="askModal" @answer="start" />
+    <Display :turn="turn" :user="userType" :winner="winner" @restart="restart" />
   </div>
 </template>
 
@@ -44,6 +44,7 @@ export default {
       winner: null,
       userType: null,
       aiType: null,
+      askModal: true,
     }
   },
   watch: {
@@ -60,12 +61,18 @@ export default {
      * CELL.WHITE means user wanna white and let AI go first
      */
     start(type) {
+      this.askModal = false;
       this.userType = type
       this.aiType = opponent(type)
       this.turn = CELL.BLACK;
       this.board = getInitBoard();
       this.isWin = getInitIsWin();
       this.cnt = INIT_CNT;
+    },
+    restart() {
+      this.turn = null;
+      this.winner = null;
+      this.askModal = true;
     },
     place(i, type) {
       // 檢查下棋的人是正確的
@@ -80,6 +87,11 @@ export default {
         this.turn = null;
         this.cnt = INIT_CNT;
         this.showWin(positions);
+      } else if (this.cnt >= BOUND) {
+        // 顯示平手
+        this.winner = 'tie';
+        this.turn = null;
+        this.cnt = INIT_CNT;
       } else {
         // 換人下
         this.turn = opponent(this.turn);
@@ -91,8 +103,8 @@ export default {
       for (let i=0; i<BOUND; ++i) {
         if (this.board[i].type !== CELL.EMPTY) continue;
         const attack = evaluate(this.board, i, this.aiType);
-        const defence = evaluate(this.board, i, this.userType);
-        const e = attack + defence;
+        const defense = evaluate(this.board, i, this.userType, true);
+        const e = attack + defense;
         if (e > mxScore)  mxPosition = [i], mxScore = e;
         else if (e === mxScore)  mxPosition.push(i);
       }
@@ -113,9 +125,10 @@ export default {
 
 <style scoped>
 #chessboard {
-  width: 640px;
-  height: 640px;
+  width: 660px;
+  height: 660px;
   background-image: url('../assets/Chessboard.svg');
+  background-size: contain;
   position: relative;
 }
 .chess {
@@ -145,6 +158,7 @@ export default {
 #game-container {
   display: flex;
   justify-content: center;
+  height: 100%;
 }
 .focus {
   border-radius: 50%;
