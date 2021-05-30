@@ -17,12 +17,8 @@
     <div v-if="winner !== null" class="flex align-center">
       <h2 style="margin-right: 10px">{{ showWinner }}</h2>
       <span 
-        v-if="winner === 'tie'"
-        :class="{
-          chess: true,
-          black: winner === CELL.BLACK,
-          white: winner === CELL.WHITE
-        }"
+        v-if="winner !== 'tie'"
+        :class="{ chess: true, black: winner === CELL.BLACK, white: winner === CELL.WHITE }"
       />
     </div>
 
@@ -31,10 +27,6 @@
     <div class="flex justify-end">
       <button type="button" @click="$emit('restart')">重新開始</button>
     </div>
-
-    <p class="footer">
-      開發者：師大資工三年級 于子緯 40747024S
-    </p>
   </div>
 </template>
 
