@@ -797,9 +797,9 @@ export const evaluateBoard = (board, aiType) => {
     (2000 * hasFives)) -
 
     ((2 * oppOpenTwos) + (1 * oppClosedTwos) +
-    (200 * oppOpenThrees) + (2 * oppClosedThrees) +
-    (2000 * oppOpenFours) + (200 * oppClosedFours) +
-    (2000 * oppHasFives))
+    (2000 * oppOpenThrees) + (2 * oppClosedThrees) +
+    (20000 * oppOpenFours) + (2000 * oppClosedFours) +
+    (20000 * oppHasFives))
   );
 }
 

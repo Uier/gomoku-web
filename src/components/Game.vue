@@ -27,8 +27,8 @@ import Ask from './Ask';
 import Display from './Display';
 import { CELL, opponent } from '../constants/type';
 import { BOUND, ROW, COL, getInitBoard, INIT_CNT, getInitIsWin } from '../constants/board';
-import AI from '../lib/ai';
 import { checkWin } from '../lib/evaluate';
+import aiWorker from '@/worker';
 
 export default {
   name: 'Game',
@@ -47,14 +47,20 @@ export default {
       aiType: null,
       askModal: true,
       twoAI: false,
+      myWorker: null,
     }
   },
   watch: {
     turn() {
       if (this.turn === this.aiType) {
-        this.ai();
+        aiWorker.send([this.board.slice(), this.aiType, this.cnt]);
       }
     },
+  },
+  mounted() {
+    aiWorker.worker.onmessage = e => {
+      this.handleAIResponse(e.data);
+    }
   },
   methods: {
     /**
@@ -99,11 +105,10 @@ export default {
         this.turn = opponent(this.turn);
       }
     },
-    ai() {
-      const pos = AI.next(this.board.slice(), this.aiType, this.cnt);
+    handleAIResponse(pos) {
       if (pos === null) {
         alert('天啊！AI 出錯了 😢');
-        return
+        return;
       }
       this.place(pos, this.aiType);
     },

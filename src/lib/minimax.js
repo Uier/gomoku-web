@@ -26,6 +26,7 @@ export function minimax(board, depth, alpha, beta, aiType, maximizing) {
   }
   const type = maximizing ? aiType : opponent(aiType);
   const searchArea = getSearchArea(board, type);
+  let ret;
   if (maximizing) {
     let mxScore = -Infinity;
     for (const i of searchArea) {
@@ -37,7 +38,7 @@ export function minimax(board, depth, alpha, beta, aiType, maximizing) {
       alpha = Math.max(alpha, score);
       if (alpha >= beta)  break;
     }
-    return mxScore;
+    ret = mxScore;
   } else {
     let mnScore = Infinity;
     for (const i of searchArea) {
@@ -49,8 +50,10 @@ export function minimax(board, depth, alpha, beta, aiType, maximizing) {
       beta = Math.min(beta, score);
       if (beta <= alpha)  break;
     }
-    return mnScore;
+    ret = mnScore;
   }
+  hash[hb] = ret;
+  return ret;
 }
 
 const hashing = (board) => {

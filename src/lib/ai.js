@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import { CELL } from '../constants/type';
+import { CELL, opponent } from '../constants/type';
 import { checkWin } from './evaluate';
-import { opponent } from '../constants/type';
+import { ROW, ROW_LABEL, COL, COL_LABEL } from '../constants/board';
 // import { evaluatePosition } from './evaluate';
 import { minimax, getSearchArea } from './minimax';
 
@@ -15,7 +15,8 @@ const AI_SEARCHING_DEPTH = 2
  * @returns 
  */
 // eslint-disable-next-line no-unused-vars
-const next = (board, aiType, curStep) => {
+const next = async (board, aiType, curStep) => {
+  await Promise.resolve();
   if (curStep === 0)  return 16;
   // if (curStep === 1)  return 112;
 
@@ -35,7 +36,7 @@ const next = (board, aiType, curStep) => {
       continue;
     board[i] = { type: aiType, step: -Infinity };
     const score = minimax(board, AI_SEARCHING_DEPTH, -Infinity, Infinity, aiType, false, searchArea);
-    // console.log(i, score);
+    console.log(`score at ${ROW_LABEL[ROW[i]]}${COL_LABEL[COL[i]]} is ${score}`);
     board[i] = { type: CELL.EMPTY, step: 0 };
     // const score = evaluatePosition(board, i, aiType);
     if (score > mxScore)
