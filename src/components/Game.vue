@@ -27,7 +27,8 @@ import Ask from './Ask';
 import Display from './Display';
 import { CELL, opponent } from '../constants/type';
 import { BOUND, ROW, COL, getInitBoard, INIT_CNT, getInitIsWin } from '../constants/board';
-import { evaluate, checkWin } from '../lib/evaluate';
+import AI from '../lib/ai';
+import { checkWin } from '../lib/evaluate';
 
 export default {
   name: 'Game',
@@ -37,14 +38,15 @@ export default {
       CELL,
       ROW,
       COL,
-      board: getInitBoard(),
-      isWin: getInitIsWin(),
-      cnt: INIT_CNT,
+      board: [],
+      isWin: [],
+      cnt: null,
       turn: null,
       winner: null,
       userType: null,
       aiType: null,
       askModal: true,
+      twoAI: false,
     }
   },
   watch: {
@@ -80,7 +82,7 @@ export default {
       // 下棋
       this.$set(this.board, i, { type: this.turn, step: ++this.cnt });
       // 檢查勝利
-      const [isWin, positions] = checkWin(this.board, i, this.turn);
+      const [isWin, positions] = checkWin(this.board.slice(), i, this.turn);
       if (isWin) {
         // 顯示勝利
         this.winner = this.turn;
@@ -98,21 +100,12 @@ export default {
       }
     },
     ai() {
-      let mxPosition = null;
-      let mxScore = -Infinity;
-      for (let i=0; i<BOUND; ++i) {
-        if (this.board[i].type !== CELL.EMPTY) continue;
-        const attack = evaluate(this.board, i, this.aiType);
-        const defense = evaluate(this.board, i, this.userType, true);
-        const e = attack + defense;
-        if (e > mxScore)  mxPosition = [i], mxScore = e;
-        else if (e === mxScore)  mxPosition.push(i);
-      }
-      if (mxPosition === null) {
-        alert('審局時發生錯誤 😢');
+      const pos = AI.next(this.board.slice(), this.aiType, this.cnt);
+      if (pos === null) {
+        alert('天啊！AI 出錯了 😢');
         return
       }
-      this.place(mxPosition[Math.floor(Math.random() * mxPosition.length)], this.aiType);
+      this.place(pos, this.aiType);
     },
     showWin(positions) {
       for (const pos of positions) {
@@ -129,6 +122,7 @@ export default {
   height: 660px;
   background-image: url('../assets/Chessboard.svg');
   background-size: contain;
+  background-repeat: no-repeat;
   position: relative;
 }
 .chess {
