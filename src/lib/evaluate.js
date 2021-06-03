@@ -269,49 +269,49 @@ export const evaluateBoard = (board, aiType) => {
           board[k - 4*SIZE + 4].type === type &&
           board[k - 5*SIZE + 5].type === CELL.EMPTY
         ) count++;
-        else if (
-          (k + 6) < BOUND &&
-          COL[k] < COL[k + 6] && 
-          board[k].type === CELL.EMPTY &&
-          board[k + 1].type === type &&
-          board[k + 2].type === type &&
-          board[k + 3].type === CELL.EMPTY &&
-          board[k + 4].type === type &&
-          board[k + 5].type === type &&
-          board[k + 6].type === CELL.EMPTY
-        ) count++;
-        else if (
-          (k + 6*SIZE) < BOUND &&
-          board[k].type === CELL.EMPTY &&
-          board[k + 1*SIZE].type === type &&
-          board[k + 2*SIZE].type === type &&
-          board[k + 3*SIZE].type === CELL.EMPTY &&
-          board[k + 4*SIZE].type === type &&
-          board[k + 5*SIZE].type === type &&
-          board[k + 6*SIZE].type === CELL.EMPTY
-        ) count++;
-        else if (
-          (k + 6*SIZE + 6) < BOUND &&
-          COL[k] < COL[k + 6*SIZE + 6] && 
-          board[k].type === CELL.EMPTY &&
-          board[k + 1*SIZE + 1].type === type &&
-          board[k + 2*SIZE + 2].type === type &&
-          board[k + 3*SIZE + 3].type === CELL.EMPTY &&
-          board[k + 4*SIZE + 4].type === type &&
-          board[k + 5*SIZE + 5].type === type &&
-          board[k + 6*SIZE + 6].type === CELL.EMPTY
-        ) count++;
-        else if (
-          0 <= (k - 6*SIZE + 6) &&
-          COL[k] < COL[k - 6*SIZE + 6] && 
-          board[k].type === CELL.EMPTY &&
-          board[k - 1*SIZE + 1].type === type &&
-          board[k - 2*SIZE + 2].type === type &&
-          board[k - 3*SIZE + 3].type === CELL.EMPTY &&
-          board[k - 4*SIZE + 4].type === type &&
-          board[k - 5*SIZE + 5].type === type &&
-          board[k - 6*SIZE + 6].type === CELL.EMPTY
-        ) count++;
+        // else if (
+        //   (k + 6) < BOUND &&
+        //   COL[k] < COL[k + 6] && 
+        //   board[k].type === CELL.EMPTY &&
+        //   board[k + 1].type === type &&
+        //   board[k + 2].type === type &&
+        //   board[k + 3].type === CELL.EMPTY &&
+        //   board[k + 4].type === type &&
+        //   board[k + 5].type === type &&
+        //   board[k + 6].type === CELL.EMPTY
+        // ) count++;
+        // else if (
+        //   (k + 6*SIZE) < BOUND &&
+        //   board[k].type === CELL.EMPTY &&
+        //   board[k + 1*SIZE].type === type &&
+        //   board[k + 2*SIZE].type === type &&
+        //   board[k + 3*SIZE].type === CELL.EMPTY &&
+        //   board[k + 4*SIZE].type === type &&
+        //   board[k + 5*SIZE].type === type &&
+        //   board[k + 6*SIZE].type === CELL.EMPTY
+        // ) count++;
+        // else if (
+        //   (k + 6*SIZE + 6) < BOUND &&
+        //   COL[k] < COL[k + 6*SIZE + 6] && 
+        //   board[k].type === CELL.EMPTY &&
+        //   board[k + 1*SIZE + 1].type === type &&
+        //   board[k + 2*SIZE + 2].type === type &&
+        //   board[k + 3*SIZE + 3].type === CELL.EMPTY &&
+        //   board[k + 4*SIZE + 4].type === type &&
+        //   board[k + 5*SIZE + 5].type === type &&
+        //   board[k + 6*SIZE + 6].type === CELL.EMPTY
+        // ) count++;
+        // else if (
+        //   0 <= (k - 6*SIZE + 6) &&
+        //   COL[k] < COL[k - 6*SIZE + 6] && 
+        //   board[k].type === CELL.EMPTY &&
+        //   board[k - 1*SIZE + 1].type === type &&
+        //   board[k - 2*SIZE + 2].type === type &&
+        //   board[k - 3*SIZE + 3].type === CELL.EMPTY &&
+        //   board[k - 4*SIZE + 4].type === type &&
+        //   board[k - 5*SIZE + 5].type === type &&
+        //   board[k - 6*SIZE + 6].type === CELL.EMPTY
+        // ) count++;
       }
     }
     return count;
@@ -792,15 +792,15 @@ export const evaluateBoard = (board, aiType) => {
 
 
   return (
-    ((200 * openTwos) + (20 * closedTwos) +
-    (2000 * openThrees) + (200 * closedThrees) +
-    (20000 * openFours) + (2000 * closedFours) +
-    (20000 * hasFives)) -
+    ((100 * openTwos) + (20 * closedTwos) +
+    (1000 * openThrees) + (100 * closedThrees) +
+    (100000 * openFours) + (10000 * closedFours) +
+    (100000 * hasFives)) -
 
-    ((200 * oppOpenTwos) + (20 * oppClosedTwos) +
-    (10000 * oppOpenThrees) + (200 * oppClosedThrees) +
-    (20000 * oppOpenFours) + (10000 * oppClosedFours) +
-    (20000 * oppHasFives))
+    ((100 * oppOpenTwos) + (20 * oppClosedTwos) +
+    (50000 * oppOpenThrees) + (100 * oppClosedThrees) +
+    (100000 * oppOpenFours) + (100000 * oppClosedFours) +
+    (100000 * oppHasFives))
   );
 }
 
