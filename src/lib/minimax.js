@@ -17,32 +17,41 @@ let hash = {};
  * @returns number
  */
 export function minimax(board, depth, alpha, beta, aiType, maximizing) {
+  // 優化二：cache 一些搜尋過的盤面，若之後有需要搜尋相同的盤面則直接返回之前搜尋過的結果
   const hb = hashing(board);
   if (hash[hb]) return hash[hb];
 
+  // minimax 遞迴終止條件
   if (depth === 0 || checkTerminated(board)) {
     hash[hb] = evaluateBoard(board.slice(), aiType);
     return hash[hb];
   }
+
+  // type 表示在這一層輪到誰下棋
   const type = maximizing ? aiType : opponent(aiType);
+  // 重新計算待搜尋評估的空位有哪些
   const searchArea = getSearchArea(board, type);
   let ret;
   if (maximizing) {
     let mxScore = -Infinity;
     for (const i of searchArea) {
-      if (board[i].type !== CELL.EMPTY) continue;
+      // 一樣假設要下在這步
       board[i] = {type: type, step: -Infinity};
+      // 往下搜尋，看這步之後能獲得的分數
       const score = minimax(board, depth-1, alpha, beta, aiType, false);
+      // 搜尋完畢，把棋子收回來
       board[i] = {type: CELL.EMPTY, step: 0};
+      // 紀錄最高分
       mxScore = Math.max(mxScore, score);
       alpha = Math.max(alpha, score);
+      // alpha beta 剪枝
       if (alpha >= beta)  break;
     }
     ret = mxScore;
   } else {
+    // 過程同 maximizing，不再贅述
     let mnScore = Infinity;
     for (const i of searchArea) {
-      if (board[i].type !== CELL.EMPTY) continue;
       board[i] = {type: type, step: -Infinity};
       const score = minimax(board, depth-1, alpha, beta, aiType, true);
       board[i] = {type: CELL.EMPTY, step: 0};
@@ -56,10 +65,12 @@ export function minimax(board, depth, alpha, beta, aiType, maximizing) {
   return ret;
 }
 
+// hash function
 const hashing = (board) => {
   return board.map(({ type }) => type).join('');
 }
 
+// 搜尋範圍
 export const getSearchArea = (board, type) => {
   const area = [];
   for (let i=0; i<BOUND; ++i) {
@@ -74,6 +85,7 @@ export const getSearchArea = (board, type) => {
     }
   }
   const uniqueArea = [...new Set(area)];
+  // 優化三：啟發式評估函數
   uniqueArea.sort((a, b) => {
     const scoreA = evaluatePosition(board, a, type);
     const scoreB = evaluatePosition(board, b, type);

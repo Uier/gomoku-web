@@ -1,6 +1,7 @@
 import { CELL, opponent } from '../constants/type';
 import { SIZE, BOUND, COL } from '../constants/board';
 
+// 目前盤面，棋子 type 下在 pos 這個位置的分數。
 export const evaluatePosition = (board, pos, type) => {
   // attack value + defense value
   return subEvaluate(board, pos, type) + subEvaluate(board, pos, opponent(type), true);
@@ -791,14 +792,14 @@ export const evaluateBoard = (board, aiType) => {
 
 
   return (
-    ((2 * openTwos) + (1 * closedTwos) +
-    (2000 * openThrees) + (2 * closedThrees) +
+    ((200 * openTwos) + (20 * closedTwos) +
+    (2000 * openThrees) + (200 * closedThrees) +
     (20000 * openFours) + (2000 * closedFours) +
     (20000 * hasFives)) -
 
-    ((2 * oppOpenTwos) + (1 * oppClosedTwos) +
-    (2000 * oppOpenThrees) + (2 * oppClosedThrees) +
-    (20000 * oppOpenFours) + (2000 * oppClosedFours) +
+    ((200 * oppOpenTwos) + (20 * oppClosedTwos) +
+    (10000 * oppOpenThrees) + (200 * oppClosedThrees) +
+    (20000 * oppOpenFours) + (10000 * oppClosedFours) +
     (20000 * oppHasFives))
   );
 }
