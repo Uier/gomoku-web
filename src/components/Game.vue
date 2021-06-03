@@ -14,7 +14,10 @@
         }"
       >
         <span v-if="step !== 0" class="step" v-text="step" />
-        <div v-else class="click-area" @click="place(i, userType)" />
+        <div v-else
+          :class="{ 'click-area': cnt !== 0 || firstHand[i]}"
+          @click="place(i, userType)"
+        />
       </div>
     </div>
     <Ask v-if="askModal" @answer="start" />
@@ -26,7 +29,7 @@
 import Ask from './Ask';
 import Display from './Display';
 import { CELL, opponent } from '../constants/type';
-import { BOUND, ROW, COL, getInitBoard, INIT_CNT, getInitIsWin } from '../constants/board';
+import { firstHand, BOUND, ROW, COL, getInitBoard, INIT_CNT, getInitIsWin } from '../constants/board';
 import { checkWin } from '../lib/evaluate';
 import aiWorker from '@/worker';
 
@@ -38,6 +41,7 @@ export default {
       CELL,
       ROW,
       COL,
+      firstHand,
       board: [],
       isWin: [],
       cnt: null,
@@ -63,12 +67,8 @@ export default {
     }
   },
   methods: {
-    /**
-     * type is the answer from Ask component
-     * CELL.BLACK means user wanna black and go first
-     * CELL.WHITE means user wanna white and let AI go first
-     */
     start(type) {
+      // 初始化並開始遊戲
       this.askModal = false;
       this.userType = type
       this.aiType = opponent(type)
@@ -78,6 +78,7 @@ export default {
       this.cnt = INIT_CNT;
     },
     restart() {
+      // 重新開始
       this.turn = null;
       this.winner = null;
       this.askModal = true;
@@ -85,6 +86,11 @@ export default {
     place(i, type) {
       // 檢查下棋的人是正確的
       if (type !== this.turn) return;
+      // 檢查第一手在外圍
+      if (this.cnt === 0 && !firstHand[i]) {
+        alert('外圍開局五子棋第一手僅能下在外圍兩圈！');
+        return;
+      }
       // 下棋
       this.$set(this.board, i, { type: this.turn, step: ++this.cnt });
       // 檢查勝利
@@ -106,13 +112,16 @@ export default {
       }
     },
     handleAIResponse(pos) {
+      // 處理 AI 回覆的訊息（要下的位置）
       if (pos === null) {
         alert('天啊！AI 出錯了 😢');
         return;
       }
+      // AI 下棋
       this.place(pos, this.aiType);
     },
     showWin(positions) {
+      // 顯示勝利
       for (const pos of positions) {
         this.$set(this.isWin, pos, true);
       }

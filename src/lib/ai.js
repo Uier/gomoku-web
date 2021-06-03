@@ -2,10 +2,9 @@
 import { CELL, opponent } from '../constants/type';
 import { checkWin } from './evaluate';
 import { ROW, ROW_LABEL, COL, COL_LABEL } from '../constants/board';
-// import { evaluatePosition } from './evaluate';
 import { minimax, getSearchArea } from './minimax';
 
-const AI_SEARCHING_DEPTH = 2
+const AI_SEARCHING_DEPTH = 2;
 
 /**
  * 計算下一步
@@ -18,7 +17,6 @@ const AI_SEARCHING_DEPTH = 2
 const next = async (board, aiType, curStep) => {
   await Promise.resolve();
   if (curStep === 0)  return 16;
-  // if (curStep === 1)  return 112;
 
   const searchArea = getSearchArea(board, aiType);
 
@@ -36,9 +34,8 @@ const next = async (board, aiType, curStep) => {
       continue;
     board[i] = { type: aiType, step: -Infinity };
     const score = minimax(board, AI_SEARCHING_DEPTH, -Infinity, Infinity, aiType, false, searchArea);
-    console.log(`score at ${ROW_LABEL[ROW[i]]}${COL_LABEL[COL[i]]} is ${score}`);
+    // console.log(`score at ${ROW_LABEL[ROW[i]]}${COL_LABEL[COL[i]]} is ${score}`);
     board[i] = { type: CELL.EMPTY, step: 0 };
-    // const score = evaluatePosition(board, i, aiType);
     if (score > mxScore)
       mxPosition = [i], mxScore = score;
     else if (score === mxScore)

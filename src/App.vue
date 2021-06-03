@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h2>人工智慧作業三：五子棋 Gomoku</h2>
+    <h2>人工智慧作業三：外圍開局五子棋 Outer-Open Gomoku</h2>
     <Game />
   </div>
 </template>

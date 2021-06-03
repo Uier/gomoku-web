@@ -10,6 +10,12 @@ export const getInitBoard = () => Array(BOUND).fill({ type: CELL.EMPTY, step: 0 
 
 export const getInitIsWin = () => Array(BOUND).fill(false);
 
+export const firstHand = Array(BOUND).fill('').map((_, index) => {
+  const r = Math.floor(index / SIZE);
+  const c = index % SIZE;
+  return (r < 2 || r > 12 || c < 2 || c > 12);
+})
+
 export const ROW = (() => {
   return Array(BOUND).fill('').map((_, index) => Math.floor(index / SIZE));
 })();
