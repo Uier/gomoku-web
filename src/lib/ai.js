@@ -1,9 +1,10 @@
 import { CELL, opponent } from '../constants/type';
 import { checkWin } from './evaluate';
 import { minimax, getSearchArea } from './minimax';
+import { start } from './timer';
 
 // minimax 搜索深度
-const AI_SEARCHING_DEPTH = 2;
+const AI_SEARCHING_DEPTH = 3;
 
 /**
  * AI 計算下一步
@@ -13,6 +14,7 @@ const AI_SEARCHING_DEPTH = 2;
  * @returns 
  */
 const next = async (board, aiType, curStep) => {
+  start();
   await Promise.resolve();
   // 第一手寫死在外圍 B14
   if (curStep === 0)  return 16;

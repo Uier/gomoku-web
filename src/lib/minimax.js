@@ -1,6 +1,7 @@
 import { CELL, opponent } from '../constants/type';
 import { SIZE, BOUND, ROW, COL } from '../constants/board';
 import { evaluateBoard, checkTerminated, evaluatePosition } from '../lib/evaluate';
+import { isTimeOut } from './timer';
 
 let hash = {};
 
@@ -17,6 +18,7 @@ let hash = {};
  * @returns number
  */
 export function minimax(board, depth, alpha, beta, aiType, maximizing) {
+  if ( isTimeOut() )  return maximizing ? -Infinity : Infinity;
   // 優化二：cache 一些搜尋過的盤面，若之後有需要搜尋相同的盤面則直接返回之前搜尋過的結果
   const hb = hashing(board);
   if (hash[hb]) return hash[hb];
