@@ -1,10 +1,10 @@
 import { CELL, opponent } from '../constants/type';
 import { checkWin } from './evaluate';
 import { minimax, getSearchArea } from './minimax';
-import { start } from './timer';
+import { start, isTimeOut } from './timer';
 
 // minimax 搜索深度
-const AI_SEARCHING_DEPTH = 3;
+const AI_SEARCHING_DEPTH = [2, 3];
 
 /**
  * AI 計算下一步
@@ -35,19 +35,23 @@ const next = async (board, aiType, curStep) => {
   // 從待搜尋評估的空位中進行 minimax 搜尋
   let mxPosition = null;
   let mxScore = -Infinity;
-  for (const i of searchArea) {
-    // 此處為 minimax 搜尋樹的根節點
-    // 假設 AI 接下來要下在 i 點
-    board[i] = { type: aiType, step: -Infinity };
-    // 往下搜尋，計算下在該點後續經過 minimax 可得到的分數
-    const score = minimax(board, AI_SEARCHING_DEPTH, -Infinity, Infinity, aiType, false, searchArea);
-    // 搜尋完畢後把下在 i 點的棋子拿走
-    board[i] = { type: CELL.EMPTY, step: 0 };
-    // 紀錄最高分的步伐
-    if (score > mxScore)
-      mxPosition = [i], mxScore = score;
-    else if (score === mxScore)
-      mxPosition.push(i);
+  for (let depth=AI_SEARCHING_DEPTH[0]; depth<=AI_SEARCHING_DEPTH[1]; depth++) {
+    if ( isTimeOut() )  break;
+    for (const i of searchArea) {
+      if ( isTimeOut() )  break;
+      // 此處為 minimax 搜尋樹的根節點
+      // 假設 AI 接下來要下在 i 點
+      board[i] = { type: aiType, step: -Infinity };
+      // 往下搜尋，計算下在該點後續經過 minimax 可得到的分數
+      const score = minimax(board, depth, -Infinity, Infinity, aiType, false, searchArea);
+      // 搜尋完畢後把下在 i 點的棋子拿走
+      board[i] = { type: CELL.EMPTY, step: 0 };
+      // 紀錄最高分的步伐
+      if (score > mxScore)
+        mxPosition = [i], mxScore = score;
+      else if (score === mxScore)
+        mxPosition.push(i);
+    }
   }
   // 若有多個最高分則隨機返回一點，同分的情況僅在一開始棋子數目少時會遇到
   return mxPosition && mxPosition[Math.floor(Math.random() * mxPosition.length)];
