@@ -4,7 +4,7 @@ import { minimax, getSearchArea } from './minimax';
 import { start, isTimeOut } from './timer';
 
 // minimax 搜索深度
-const AI_SEARCHING_DEPTH = [2, 3];
+const AI_SEARCHING_DEPTH = 2;
 
 /**
  * AI 計算下一步
@@ -35,7 +35,7 @@ const next = async (board, aiType, curStep) => {
   // 從待搜尋評估的空位中進行 minimax 搜尋
   let mxPosition = null;
   let mxScore = -Infinity;
-  for (let depth=AI_SEARCHING_DEPTH[0]; depth<=AI_SEARCHING_DEPTH[1]; depth++) {
+  for (let depth=AI_SEARCHING_DEPTH; ; depth++) {
     if ( isTimeOut() )  break;
     for (const i of searchArea) {
       if ( isTimeOut() )  break;

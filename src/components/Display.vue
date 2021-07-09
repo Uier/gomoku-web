@@ -22,7 +22,16 @@
       />
     </div>
 
+    <div style="max-height: 150px; overflow-y: scroll; border: 1px solid #777; margin-top: 20px; text-align: left; padding: 10px">
+      History:
+      <p v-for="({ pos, type }, index) in history" :key="index">
+        {{ `${index+1}: ${type === CELL.BLACK ? '黑' : '白'}方下 ${COL_LABEL[COL[pos]]}${ROW_LABEL[ROW[pos]]}` }}
+      </p>
+    </div>
+
     <div class="spacer" />
+
+    <div style="cursor: pointer; margin-bottom: 20px" @click="$emit('back')">往回一回合</div>
 
     <div class="flex justify-end">
       <button type="button" @click="$emit('restart')">重新開始</button>
@@ -38,11 +47,12 @@
 
 <script>
 import { CELL } from '../constants/type';
+import { ROW, COL, ROW_LABEL, COL_LABEL } from '../constants/board';
 
 export default {
   name: 'Display',
-  props: ['turn', 'user', 'winner'],
-  data() { return { CELL } },
+  props: ['turn', 'user', 'winner', 'history'],
+  data() { return { CELL, ROW, COL, ROW_LABEL, COL_LABEL } },
   computed: {
     showUser() {
       if (this.user === null) return '';

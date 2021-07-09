@@ -21,7 +21,7 @@
       </div>
     </div>
     <Ask v-if="askModal" @answer="start" />
-    <Display :turn="turn" :user="userType" :winner="winner" @restart="restart" />
+    <Display :turn="turn" :user="userType" :winner="winner" :history="history" @restart="restart" @back="back" />
   </div>
 </template>
 
@@ -44,6 +44,7 @@ export default {
       firstHand,
       board: [],
       isWin: [],
+      history: [],
       cnt: null,
       turn: null,
       winner: null,
@@ -75,6 +76,7 @@ export default {
       this.turn = CELL.BLACK;
       this.board = getInitBoard();
       this.isWin = getInitIsWin();
+      this.history = [];
       this.cnt = INIT_CNT;
     },
     restart() {
@@ -82,6 +84,16 @@ export default {
       this.turn = null;
       this.winner = null;
       this.askModal = true;
+    },
+    back() {
+      if (this.userType !== this.turn) {
+        alert('輪到你的時候才能用');
+      }
+      const two = this.history.slice(-2);
+      this.history.pop();
+      this.history.pop();
+      this.$set(this.board, two[1].pos, { type: CELL.EMPTY, cnt: 0 });
+      this.$set(this.board, two[0].pos, { type: CELL.EMPTY, cnt: 0 });
     },
     place(i, type) {
       // 檢查下棋的人是正確的
@@ -93,6 +105,7 @@ export default {
       }
       // 下棋
       this.$set(this.board, i, { type: this.turn, step: ++this.cnt });
+      this.history.push({ pos: i, type: this.turn });
       // 檢查勝利
       const [isWin, positions] = checkWin(this.board.slice(), i, this.turn);
       if (isWin) {
