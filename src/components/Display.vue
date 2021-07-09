@@ -36,12 +36,6 @@
     <div class="flex justify-end">
       <button type="button" @click="$emit('restart')">重新開始</button>
     </div>
-
-    <p class="footer">
-      作者：師大資工三年級 于子緯
-      <br />
-      <a href="https://github.com/Uier/gomoku-web">https://github.com/Uier/gomoku-web</a>
-    </p>
   </div>
 </template>
 
@@ -75,6 +69,7 @@ export default {
 .display-container {
   margin-left: 50px;
   display: flex;
+  width: 250px;
   flex-direction: column;
   padding: 10px 20px;
   background-color: rgba(235, 242, 245, 0.75);

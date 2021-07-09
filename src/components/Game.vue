@@ -88,6 +88,7 @@ export default {
     back() {
       if (this.userType !== this.turn) {
         alert('輪到你的時候才能用');
+        return;
       }
       const two = this.history.slice(-2);
       this.history.pop();
