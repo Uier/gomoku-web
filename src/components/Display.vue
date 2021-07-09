@@ -22,7 +22,7 @@
       />
     </div>
 
-    <div style="max-height: 150px; overflow-y: scroll; border: 1px solid #777; margin-top: 20px; text-align: left; padding: 10px">
+    <div style="height: 150px; overflow-y: scroll; border: 1px solid #777; margin-top: 20px; text-align: left; padding: 10px">
       History:
       <p v-for="({ pos, type }, index) in history" :key="index">
         {{ `${index+1}: ${type === CELL.BLACK ? '黑' : '白'}方下 ${COL_LABEL[COL[pos]]}${ROW_LABEL[ROW[pos]]}` }}
